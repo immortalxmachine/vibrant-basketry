@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -25,6 +26,24 @@ const checkoutFormSchema = z.object({
   city: z.string().min(2, "City is required"),
   state: z.string().min(2, "State is required"),
   zipCode: z.string().min(5, "ZIP code is required"),
+  paymentMethod: z.enum(["credit", "debit", "paypal"], {
+    required_error: "Please select a payment method",
+  }),
+  cardNumber: z
+    .string()
+    .regex(/^\d{4} \d{4} \d{4} \d{4}$/, "Please enter a valid card number")
+    .optional()
+    .or(z.literal("")),
+  expiryDate: z
+    .string()
+    .regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "Please enter a valid expiry date (MM/YY)")
+    .optional()
+    .or(z.literal("")),
+  cvc: z
+    .string()
+    .regex(/^\d{3,4}$/, "Please enter a valid CVC")
+    .optional()
+    .or(z.literal("")),
 });
 
 type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
@@ -34,6 +53,7 @@ const CheckoutPage = () => {
   const { items, getTotal, clearCart } = useCart();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showCardFields, setShowCardFields] = useState(true);
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
@@ -44,6 +64,10 @@ const CheckoutPage = () => {
       city: "",
       state: "",
       zipCode: "",
+      paymentMethod: "credit",
+      cardNumber: "",
+      expiryDate: "",
+      cvc: "",
     },
   });
 
@@ -65,6 +89,17 @@ const CheckoutPage = () => {
         variant: "destructive"
       });
       navigate('/products');
+      return;
+    }
+
+    // Validate card details if credit/debit is selected
+    if ((values.paymentMethod === "credit" || values.paymentMethod === "debit") && 
+        (!values.cardNumber || !values.expiryDate || !values.cvc)) {
+      toast({
+        title: "Payment information required",
+        description: "Please enter your complete card details",
+        variant: "destructive"
+      });
       return;
     }
 
@@ -98,6 +133,9 @@ const CheckoutPage = () => {
 
       if (itemsError) throw itemsError;
 
+      // Mock payment processing - in a real app you would use Stripe or another payment processor
+      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate payment processing
+
       // Success - clear the cart and navigate to confirmation
       clearCart();
       toast({
@@ -117,6 +155,9 @@ const CheckoutPage = () => {
     }
   };
 
+  // Watch the payment method to toggle card fields visibility
+  const paymentMethod = form.watch("paymentMethod");
+  
   return (
     <>
       <Helmet>
@@ -235,7 +276,7 @@ const CheckoutPage = () => {
                       </div>
                     </div>
 
-                    {/* Payment Section - In a real app, would integrate with Stripe */}
+                    {/* Payment Section */}
                     <Card className="mt-6">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
@@ -243,29 +284,138 @@ const CheckoutPage = () => {
                           Payment Details
                         </CardTitle>
                         <CardDescription>
-                          This is a demo application. No real payment will be processed.
+                          Select a payment method for your order
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <div className="grid gap-4">
-                          <div className="grid gap-2">
-                            <FormLabel htmlFor="card-number">Card Number</FormLabel>
-                            <Input id="card-number" placeholder="4242 4242 4242 4242" disabled value="4242 4242 4242 4242" />
-                          </div>
-                          <div className="grid grid-cols-3 gap-4">
-                            <div className="grid gap-2">
-                              <FormLabel htmlFor="expire-date">Expiry Date</FormLabel>
-                              <Input id="expire-date" placeholder="MM/YY" disabled value="12/25" />
+                        <div className="grid gap-6">
+                          <FormField
+                            control={form.control}
+                            name="paymentMethod"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormControl>
+                                  <RadioGroup
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    className="flex flex-col space-y-1"
+                                  >
+                                    <FormItem className="flex items-center space-x-3 space-y-0">
+                                      <FormControl>
+                                        <RadioGroupItem value="credit" />
+                                      </FormControl>
+                                      <FormLabel className="font-normal cursor-pointer">Credit Card</FormLabel>
+                                    </FormItem>
+                                    <FormItem className="flex items-center space-x-3 space-y-0">
+                                      <FormControl>
+                                        <RadioGroupItem value="debit" />
+                                      </FormControl>
+                                      <FormLabel className="font-normal cursor-pointer">Debit Card</FormLabel>
+                                    </FormItem>
+                                    <FormItem className="flex items-center space-x-3 space-y-0">
+                                      <FormControl>
+                                        <RadioGroupItem value="paypal" />
+                                      </FormControl>
+                                      <FormLabel className="font-normal cursor-pointer">PayPal</FormLabel>
+                                    </FormItem>
+                                  </RadioGroup>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          {/* Credit/Debit Card Fields */}
+                          {(paymentMethod === "credit" || paymentMethod === "debit") && (
+                            <div className="pt-4 space-y-4">
+                              <FormField
+                                control={form.control}
+                                name="cardNumber"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Card Number</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        placeholder="4242 4242 4242 4242" 
+                                        {...field}
+                                        maxLength={19}
+                                        onChange={(e) => {
+                                          // Format card number with spaces
+                                          const value = e.target.value.replace(/\s/g, "");
+                                          const formattedValue = value
+                                            .replace(/\D/g, "")
+                                            .replace(/(\d{4})(?=\d)/g, "$1 ");
+                                          field.onChange(formattedValue);
+                                        }}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              
+                              <div className="grid grid-cols-2 gap-4">
+                                <FormField
+                                  control={form.control}
+                                  name="expiryDate"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Expiry Date</FormLabel>
+                                      <FormControl>
+                                        <Input 
+                                          placeholder="MM/YY" 
+                                          {...field}
+                                          maxLength={5}
+                                          onChange={(e) => {
+                                            // Format expiry date with slash
+                                            const value = e.target.value.replace(/\D/g, "");
+                                            if (value.length <= 2) {
+                                              field.onChange(value);
+                                            } else {
+                                              field.onChange(
+                                                value.slice(0, 2) + "/" + value.slice(2, 4)
+                                              );
+                                            }
+                                          }}
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <FormField
+                                  control={form.control}
+                                  name="cvc"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>CVC</FormLabel>
+                                      <FormControl>
+                                        <Input 
+                                          placeholder="123" 
+                                          {...field}
+                                          maxLength={4} 
+                                          onChange={(e) => {
+                                            const value = e.target.value.replace(/\D/g, "");
+                                            field.onChange(value);
+                                          }}
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
                             </div>
-                            <div className="grid gap-2">
-                              <FormLabel htmlFor="card-cvc">CVC</FormLabel>
-                              <Input id="card-cvc" placeholder="CVC" disabled value="123" />
+                          )}
+
+                          {/* PayPal info */}
+                          {paymentMethod === "paypal" && (
+                            <div className="pt-4 bg-gray-50 p-4 rounded-md text-center">
+                              <p className="text-sm text-muted-foreground">
+                                You will be redirected to PayPal to complete your purchase securely.
+                              </p>
                             </div>
-                            <div className="grid gap-2">
-                              <FormLabel htmlFor="card-zip">ZIP</FormLabel>
-                              <Input id="card-zip" placeholder="ZIP" disabled value="10001" />
-                            </div>
-                          </div>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
