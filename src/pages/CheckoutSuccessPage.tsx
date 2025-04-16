@@ -50,7 +50,14 @@ const CheckoutSuccessPage = () => {
         if (!data) {
           setError('Order not found');
         } else {
-          setOrder(data as Order);
+          // Transform the Supabase data to match our Order interface
+          setOrder({
+            id: data.id,
+            userId: data.user_id,
+            status: data.status,
+            total: data.total,
+            createdAt: data.created_at
+          });
         }
       } catch (err) {
         console.error('Error fetching order:', err);
