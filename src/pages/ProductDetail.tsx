@@ -12,7 +12,7 @@ import { Heart, Minus, Plus, ShoppingCart, Star, ChevronRight, ArrowLeft } from 
 // Sample product data (in a real app, this would come from an API)
 const sampleProducts: Product[] = [
   {
-    id: 1,
+    id: "1",
     name: "Premium Wireless Headphones",
     price: 249.99,
     description: "Experience crystal-clear sound with our premium wireless headphones featuring noise cancellation technology. These headphones are designed for comfort during extended listening sessions, with memory foam ear cushions and an adjustable headband. They feature Bluetooth 5.0 connectivity for seamless pairing with your devices and up to 30 hours of battery life on a single charge.",
@@ -23,7 +23,7 @@ const sampleProducts: Product[] = [
     featured: true
   },
   {
-    id: 2,
+    id: "2",
     name: "Smart Watch Series 5",
     price: 399.99,
     description: "Stay connected with our latest smartwatch featuring health monitoring, GPS, and cellular connectivity. The Series 5 includes advanced health sensors to track your heart rate, sleep patterns, and activity levels. With a beautiful always-on Retina display, you can easily view your information at a glance. The watch is water-resistant up to 50 meters and includes a variety of customizable bands to match your style.",
@@ -34,7 +34,7 @@ const sampleProducts: Product[] = [
     featured: true
   },
   {
-    id: 3,
+    id: "3",
     name: "Designer Leather Bag",
     price: 159.99,
     description: "A stylish leather bag that combines elegance and functionality, perfect for everyday use. Crafted from premium full-grain leather, this bag features a spacious main compartment with interior pockets for organization, a secure zippered closure, and adjustable straps for comfortable carrying. The timeless design ensures this bag will be a staple in your collection for years to come.",
@@ -45,7 +45,7 @@ const sampleProducts: Product[] = [
     featured: true
   },
   {
-    id: 4,
+    id: "4",
     name: "Ultra-Slim Laptop Pro",
     price: 1299.99,
     description: "The latest ultra-slim laptop with powerful performance, stunning display, and all-day battery life. Featuring a high-resolution Retina display, this laptop delivers vibrant colors and incredible detail. Powered by the latest processor and graphics card, it handles intensive tasks with ease while maintaining a thin and lightweight design. The backlit keyboard and large trackpad provide a comfortable user experience, and the solid-state drive ensures fast boot times and application launches.",
@@ -74,7 +74,7 @@ const ProductDetail = () => {
       
       // In a real app, fetch from API based on ID
       setTimeout(() => {
-        const foundProduct = sampleProducts.find(p => p.id === Number(id));
+        const foundProduct = sampleProducts.find(p => p.id === id);
         setProduct(foundProduct || null);
         setIsLoading(false);
       }, 500);

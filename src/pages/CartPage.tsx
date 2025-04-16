@@ -21,7 +21,7 @@ const CartPage = () => {
   const { items, removeItem, updateQuantity, clearCart, getTotal, itemCount } = useCart();
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   
-  const handleRemoveItem = (productId: number) => {
+  const handleRemoveItem = (productId: string) => {
     removeItem(productId);
     toast({
       title: "Item removed",

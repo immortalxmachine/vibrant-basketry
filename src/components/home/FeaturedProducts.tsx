@@ -9,7 +9,7 @@ import { ArrowRight } from 'lucide-react';
 // Sample product data (in a real app, this would come from an API)
 const sampleProducts: Product[] = [
   {
-    id: 1,
+    id: "1",
     name: "Premium Wireless Headphones",
     price: 249.99,
     description: "Experience crystal-clear sound with our premium wireless headphones featuring noise cancellation technology.",
@@ -20,7 +20,7 @@ const sampleProducts: Product[] = [
     featured: true
   },
   {
-    id: 2,
+    id: "2",
     name: "Smart Watch Series 5",
     price: 399.99,
     description: "Stay connected with our latest smartwatch featuring health monitoring, GPS, and cellular connectivity.",
@@ -31,7 +31,7 @@ const sampleProducts: Product[] = [
     featured: true
   },
   {
-    id: 3,
+    id: "3",
     name: "Designer Leather Bag",
     price: 159.99,
     description: "A stylish leather bag that combines elegance and functionality, perfect for everyday use.",
@@ -42,7 +42,7 @@ const sampleProducts: Product[] = [
     featured: true
   },
   {
-    id: 4,
+    id: "4",
     name: "Ultra-Slim Laptop Pro",
     price: 1299.99,
     description: "The latest ultra-slim laptop with powerful performance, stunning display, and all-day battery life.",

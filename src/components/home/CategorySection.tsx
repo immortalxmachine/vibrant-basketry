@@ -7,22 +7,22 @@ import { cn } from '@/lib/utils';
 // Sample category data (in a real app, this would come from an API)
 const sampleCategories: Category[] = [
   {
-    id: 1,
+    id: "1",
     name: "Electronics",
     image: "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8ZWxlY3Ryb25pY3N8ZW58MHx8MHx8fDA%3D"
   },
   {
-    id: 2,
+    id: "2",
     name: "Clothing",
     image: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2xvdGhpbmd8ZW58MHx8MHx8fDA%3D"
   },
   {
-    id: 3,
+    id: "3",
     name: "Accessories",
     image: "https://images.unsplash.com/photo-1549439602-43ebca4c6b5d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8YWNjZXNzb3JpZXN8ZW58MHx8MHx8fDA%3D"
   },
   {
-    id: 4,
+    id: "4",
     name: "Home Decor",
     image: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aG9tZSUyMGRlY29yfGVufDB8fDB8fHww"
   }

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Product } from '@/lib/types';
@@ -13,7 +12,7 @@ import { Search, SlidersHorizontal } from 'lucide-react';
 // Sample product data (in a real app, this would come from an API)
 const sampleProducts: Product[] = [
   {
-    id: 1,
+    id: "1",
     name: "Premium Wireless Headphones",
     price: 249.99,
     description: "Experience crystal-clear sound with our premium wireless headphones featuring noise cancellation technology.",
@@ -24,7 +23,7 @@ const sampleProducts: Product[] = [
     featured: true
   },
   {
-    id: 2,
+    id: "2",
     name: "Smart Watch Series 5",
     price: 399.99,
     description: "Stay connected with our latest smartwatch featuring health monitoring, GPS, and cellular connectivity.",
@@ -35,7 +34,7 @@ const sampleProducts: Product[] = [
     featured: true
   },
   {
-    id: 3,
+    id: "3",
     name: "Designer Leather Bag",
     price: 159.99,
     description: "A stylish leather bag that combines elegance and functionality, perfect for everyday use.",
@@ -46,7 +45,7 @@ const sampleProducts: Product[] = [
     featured: true
   },
   {
-    id: 4,
+    id: "4",
     name: "Ultra-Slim Laptop Pro",
     price: 1299.99,
     description: "The latest ultra-slim laptop with powerful performance, stunning display, and all-day battery life.",
@@ -57,7 +56,7 @@ const sampleProducts: Product[] = [
     featured: true
   },
   {
-    id: 5,
+    id: "5",
     name: "Premium Denim Jacket",
     price: 89.99,
     description: "A classic denim jacket made from premium materials, featuring a comfortable fit and timeless design.",
@@ -67,7 +66,7 @@ const sampleProducts: Product[] = [
     inStock: true
   },
   {
-    id: 6,
+    id: "6",
     name: "Ergonomic Office Chair",
     price: 249.99,
     description: "An ergonomic office chair designed for maximum comfort during long work sessions.",
@@ -77,7 +76,7 @@ const sampleProducts: Product[] = [
     inStock: true
   },
   {
-    id: 7,
+    id: "7",
     name: "Stainless Steel Water Bottle",
     price: 29.99,
     description: "An eco-friendly, vacuum-insulated water bottle that keeps your drinks hot or cold for hours.",
@@ -87,7 +86,7 @@ const sampleProducts: Product[] = [
     inStock: true
   },
   {
-    id: 8,
+    id: "8",
     name: "Modern Coffee Table",
     price: 199.99,
     description: "A sleek, modern coffee table with a minimalist design, perfect for any living room.",
@@ -99,11 +98,11 @@ const sampleProducts: Product[] = [
 ];
 
 const categories = [
-  { id: 1, name: "All" },
-  { id: 2, name: "Electronics" },
-  { id: 3, name: "Clothing" },
-  { id: 4, name: "Accessories" },
-  { id: 5, name: "Furniture" }
+  { id: "1", name: "All" },
+  { id: "2", name: "Electronics" },
+  { id: "3", name: "Clothing" },
+  { id: "4", name: "Accessories" },
+  { id: "5", name: "Furniture" }
 ];
 
 const ProductsPage = () => {
