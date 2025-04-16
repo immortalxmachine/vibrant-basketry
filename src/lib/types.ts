@@ -1,6 +1,6 @@
 
 export interface Product {
-  id: number;
+  id: string;
   name: string;
   price: number;
   description: string;
@@ -17,7 +17,30 @@ export interface CartItem {
 }
 
 export type Category = {
-  id: number;
+  id: string;
   name: string;
   image: string;
 };
+
+export interface Profile {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  avatarUrl: string | null;
+}
+
+export interface Order {
+  id: string;
+  userId: string;
+  status: string;
+  total: number;
+  createdAt: string;
+}
+
+export interface OrderItem {
+  id: string;
+  orderId: string;
+  productId: string;
+  quantity: number;
+  price: number;
+}

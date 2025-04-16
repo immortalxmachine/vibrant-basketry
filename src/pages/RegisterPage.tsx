@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { toast } from "sonner";
 import { Mail, Lock, User, ArrowRight } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -35,7 +35,7 @@ const registerSchema = z.object({
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 const RegisterPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const { signUp, loading } = useAuth();
   const navigate = useNavigate();
 
   const form = useForm<RegisterFormValues>({
@@ -50,23 +50,7 @@ const RegisterPage = () => {
   });
 
   const onSubmit = async (data: RegisterFormValues) => {
-    setIsLoading(true);
-    
-    // This is a mock registration - in a real app, this would call an authentication API
-    try {
-      console.log("Registration attempt with:", data);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast.success("Account created successfully!");
-      navigate("/login");
-    } catch (error) {
-      console.error("Registration error:", error);
-      toast.error("Registration failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+    await signUp(data.email, data.password, { name: data.name });
   };
 
   return (
@@ -194,10 +178,10 @@ const RegisterPage = () => {
             <Button 
               type="submit" 
               className="w-full flex items-center justify-center gap-2"
-              disabled={isLoading}
+              disabled={loading}
             >
-              {isLoading ? "Creating Account..." : "Create Account"}
-              {!isLoading && <ArrowRight className="h-4 w-4" />}
+              {loading ? "Creating Account..." : "Create Account"}
+              {!loading && <ArrowRight className="h-4 w-4" />}
             </Button>
           </form>
         </Form>

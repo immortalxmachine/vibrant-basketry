@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Mail, Lock, ArrowRight } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,7 +29,7 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 const LoginPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const { signIn, loading } = useAuth();
   const navigate = useNavigate();
 
   const form = useForm<LoginFormValues>({
@@ -41,23 +42,7 @@ const LoginPage = () => {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    setIsLoading(true);
-    
-    // This is a mock login - in a real app, this would call an authentication API
-    try {
-      console.log("Login attempt with:", data);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast.success("Login successful!");
-      navigate("/");
-    } catch (error) {
-      console.error("Login error:", error);
-      toast.error("Login failed. Please check your credentials.");
-    } finally {
-      setIsLoading(false);
-    }
+    await signIn(data.email, data.password);
   };
 
   return (
@@ -150,10 +135,10 @@ const LoginPage = () => {
             <Button 
               type="submit" 
               className="w-full flex items-center justify-center gap-2"
-              disabled={isLoading}
+              disabled={loading}
             >
-              {isLoading ? "Signing in..." : "Sign in"}
-              {!isLoading && <ArrowRight className="h-4 w-4" />}
+              {loading ? "Signing in..." : "Sign in"}
+              {!loading && <ArrowRight className="h-4 w-4" />}
             </Button>
           </form>
         </Form>

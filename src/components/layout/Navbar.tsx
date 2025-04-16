@@ -1,16 +1,26 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, ShoppingCart, User, Menu, X, Search } from 'lucide-react';
+import { Home, ShoppingCart, User, Menu, X, Search, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/hooks/useCart';
+import { useAuth } from '@/hooks/useAuth';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { itemCount } = useCart();
+  const { user, profile, signOut } = useAuth();
 
   // Update scroll state
   useEffect(() => {
@@ -31,6 +41,16 @@ const Navbar = () => {
     { name: 'Home', path: '/', icon: <Home className="w-5 h-5" /> },
     { name: 'Products', path: '/products', icon: <Search className="w-5 h-5" /> },
   ];
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
+  const displayName = profile ? 
+    (profile.firstName || profile.lastName ? 
+      `${profile.firstName || ''} ${profile.lastName || ''}`.trim() : 
+      'Your Account') : 
+    'Your Account';
 
   return (
     <header 
@@ -85,24 +105,47 @@ const Navbar = () => {
             </Button>
           </Link>
           
-          <Link to="/login">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="interactive-hover"
-              aria-label="User Account"
-            >
-              <User className="w-5 h-5" />
-            </Button>
-          </Link>
-          
-          <Link to="/login">
-            <Button 
-              className="bg-primary hover:bg-primary/90 transition-all duration-300 shadow-sm hover:shadow-md interactive-press"
-            >
-              Login
-            </Button>
-          </Link>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="interactive-hover"
+                  aria-label="User Account"
+                >
+                  <User className="w-5 h-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>{displayName}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="cursor-pointer w-full">
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/orders" className="cursor-pointer w-full">
+                    Orders
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link to="/login">
+              <Button 
+                className="bg-primary hover:bg-primary/90 transition-all duration-300 shadow-sm hover:shadow-md interactive-press"
+              >
+                Login
+              </Button>
+            </Link>
+          )}
         </div>
         
         {/* Mobile Menu Button */}
@@ -154,18 +197,48 @@ const Navbar = () => {
                 <span>{link.name}</span>
               </Link>
             ))}
-            <Link
-              to="/login"
-              className="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors hover:bg-secondary"
-            >
-              <User className="w-5 h-5" />
-              <span>Login</span>
-            </Link>
-            <div className="pt-2">
-              <Button className="w-full bg-primary hover:bg-primary/90 interactive-press">
-                Sign Up
-              </Button>
-            </div>
+            
+            {user ? (
+              <>
+                <Link
+                  to="/profile"
+                  className="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors hover:bg-secondary"
+                >
+                  <User className="w-5 h-5" />
+                  <span>Profile</span>
+                </Link>
+                <Link
+                  to="/orders"
+                  className="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors hover:bg-secondary"
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                  <span>Orders</span>
+                </Link>
+                <Button 
+                  onClick={handleSignOut} 
+                  variant="destructive" 
+                  className="w-full flex items-center space-x-2 justify-center"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Sign out</span>
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors hover:bg-secondary"
+                >
+                  <User className="w-5 h-5" />
+                  <span>Login</span>
+                </Link>
+                <div className="pt-2">
+                  <Button className="w-full bg-primary hover:bg-primary/90 interactive-press">
+                    Sign Up
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
