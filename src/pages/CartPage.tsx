@@ -1,6 +1,5 @@
-
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/hooks/useCart';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -20,6 +19,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 const CartPage = () => {
   const { items, removeItem, updateQuantity, clearCart, getTotal, itemCount } = useCart();
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const navigate = useNavigate();
   
   const handleRemoveItem = (productId: string) => {
     removeItem(productId);
@@ -36,6 +36,18 @@ const CartPage = () => {
       title: "Cart cleared",
       description: "All items have been removed from your cart",
     });
+  };
+
+  const handleCheckout = () => {
+    if (items.length === 0) {
+      toast({
+        title: "Empty cart",
+        description: "Your cart is empty. Add items before proceeding to checkout.",
+        variant: "destructive"
+      });
+      return;
+    }
+    navigate('/checkout');
   };
   
   return (
@@ -204,7 +216,7 @@ const CartPage = () => {
                       </div>
                     </div>
                     
-                    <Button className="w-full mb-3" size="lg">
+                    <Button className="w-full mb-3" size="lg" onClick={handleCheckout}>
                       Proceed to Checkout
                     </Button>
                     
